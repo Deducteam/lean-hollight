@@ -17,7 +17,7 @@ You can easily contribute by proving the correctness of more mappings in Lean:
 
 - Create a [pull request](https://github.com/Deducteam/lean-hollight/pulls).
 
-You can also propose to change the mapping of some type in one of the mappings files. Every HOL-Light type `A` is axiomatized as being isomorphic to the subset of elements `x` of some already defined type `B` that satisfies some property `p:B->Prop`. `A` can always be mapped to the Lean type `{x:B|p(x)}` (see [init.v](https://github.com/Deducteam/lean-hollight/blob/main/init.v#L306)) but it is possible to map it to some more convenient type `A'` by defining two functions:
+You can also propose to change the mapping of some type in one of the mappings files. Every HOL-Light type `A` is axiomatized as being isomorphic to the subset of elements `x` of some already defined type `B` that satisfies some property `p:B->Prop`. `A` can always be mapped to the Lean type `{x:B|p(x)}` but it is possible to map it to a another type `A'` by defining two functions:
 
 - `mk:B->A'`
 
