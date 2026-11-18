@@ -242,7 +242,6 @@ stage 1 create_opam_switch
 eval `opam env`
 stage 2 install_lambdapi $lambdapi_commit
 stage 3 install_hol2dk $hol2dk_commit
-#export HOL2DK_DIR=`pwd`/hol2dk
 export HOL2DK_DIR=$OPAM_SWITCH_PREFIX/share/hol2dk
 stage 4 install_hollight_deps
 stage 5 install_hollight
