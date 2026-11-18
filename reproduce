@@ -154,7 +154,7 @@ config_output_dir() {
     echo leanprover/lean4:v$lean_version > $root_path/lean-toolchain
     cat >> lakefile.toml <<__END__
 [leanOptions]
-pp.unicode.fun = true # pretty-prints \`fun a ↦ b\`
+pp.unicode.fun = true
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
 maxSynthPendingDepth = 3
@@ -189,7 +189,7 @@ remove_empty_modules() {
         $1
 }
 
-create_and_check_library() {
+create_and_check_lib() {
     start create library
     make -C output opam
     dest=
@@ -205,17 +205,18 @@ create_and_check_library() {
     cd ..
 }
 
-compare_opam_file() {
-    line
-    echo compare $1 ...
-    diff ../$1 opam/$1
+# compare_lib_file dir1 dir2 file
+compare_lib_file() {
+    echo compare $1/$3 $2/$3 ...
+    diff $1/$3 $2/$3
 }
 
-compare_opam_files() {
-    for f in terms.lean theorems.lean
-    do
-        compare_opam_file $f
-    done
+compare_lib_files() {
+    start compare files
+    compare_lib_file .. lib lean-toolchain
+    compare_lib_file .. lib lakefile.toml
+    compare_lib_file .. lib $root_path/terms.lean
+    compare_lib_file .. lib $root_path/theorems.lean
 }
 
 check_proofs() {
@@ -251,9 +252,10 @@ stage 7 install_lean $lean_version
 stage 8 dump_proofs
 stage 9 config_output_dir
 stage 10 translate_proofs
-stage 11 create_and_check_library
+stage 11 create_and_check_lib
+stage 12 compare_lib_files
 ulimit -s unlimited
-stage 12 check_proofs
+stage 13 check_proofs
 
 for f in `ls -1 $timefile-* | sort -V`
 do
