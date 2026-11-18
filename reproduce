@@ -10,11 +10,12 @@ root_path=HOLLight
 
 hollight_version=3.1.0
 hollight_commit=Release-3.1.0
-hol2dk_commit=e150afd
-lambdapi_commit=dfd44e0a
+hol2dk_commit=d22bf99
+lambdapi_commit=eb680ac2
 camlp5_version=8.03.06
 ocaml_version=5.3.0
 lean_version=4.31.0
+mathlib_version=4.31.0
 
 hollight_file=hol_upto_real.ml
 
@@ -26,14 +27,13 @@ gen_hollight_file() {
 base=`basename $hollight_file .ml`
 dump_simp_option=-before-hol
 
-requiring=
+requiring=mapping
 mapping=mapping.lp
 renaming=renaming.lp
 
-# setup end ##################################################################
-
-make="make -j`nproc`"
 timefile=time-$root_path
+
+# setup end ##################################################################
 
 usage() {
     cat <<__EOF__
@@ -149,27 +149,39 @@ config_output_dir() {
     start configure output directory
     mkdir -p output
     cd output
-    if test -f Makefile; then $make clean-all; fi
-    hol2dk config $hollight_file $root_path $requiring $leanfiles --mapping ../../$mapping --renaming ../../$renaming
+    if test -f Makefile; then make clean-all; fi
+    hol2dk config $hollight_file $root_path ../../mapping.lean --mapping ../../$mapping --renaming ../../$renaming
     echo leanprover/lean4:v$lean_version > $root_path/lean-toolchain
+    cat >> lakefile.toml <<__END__
+[leanOptions]
+pp.unicode.fun = true # pretty-prints \`fun a ↦ b\`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v$mathlib_version"
+__END__
+    lake update
     cd ..
 }
 
 translate_proofs() {
     start translate HOL-Light proofs to lambdapi and lean
     cd output
-    $make split
-    $make lp
-    $make lean
-#    $make merge-spec-files
-#    $make rm-empty-deps
+    make split
+    make lp
+    make lean
+#    make merge-spec-files
+#    make rm-empty-deps
     cd ..
 }
 
 check_proofs() {
     start check proofs
     cd output
-    $make olean
+    make olean
     cd ..
 }
 
@@ -199,7 +211,8 @@ stage 7 install_lean $lean_version
 stage 8 dump_proofs
 stage 9 config_output_dir
 stage 10 translate_proofs
-#stage 11 check_proofs
+ulimit -s unlimited
+stage 11 check_proofs
 
 for f in `ls -1 $timefile-* | sort -V`
 do
