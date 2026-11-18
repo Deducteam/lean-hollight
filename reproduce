@@ -134,7 +134,10 @@ install_lean() {
         chmod a+x elan-init.sh
         ./elan-init.sh -y --default-toolchain none
     fi
-    elan toolchain install leanprover/lean4:v$lean_version
+    if ! elan toolchain list | grep -q leanprover/lean4:v$lean_version
+    then
+        elan toolchain install leanprover/lean4:v$lean_version
+    fi
 }
 
 dump_proofs() {
