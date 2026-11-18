@@ -178,6 +178,46 @@ translate_proofs() {
     cd ..
 }
 
+remove_empty_modules() {
+    sed -e "s/${base}_//g" \
+        -e "/^import ${root_path}\.theory_hol$/d" \
+        -e "/^import ${root_path}\.types$/d" \
+        -e "/^import ${root_path}\.axioms$/d" \
+        -e "/^open ${root_path}\.theory_hol$/d" \
+        -e "/^open ${root_path}\.types$/d" \
+        -e "/^open ${root_path}\.axioms$/d" \
+        $1
+}
+
+create_and_check_library() {
+    start create library
+    make -C output opam
+    dest=
+    mkdir -p lib/$root_path
+    cp output/lakefile.toml output/lean-toolchain lib
+    echo "import $root_path.theorems" > lib/$root_path.lean
+    cp output/mapping.lean lib/$root_path
+    remove_empty_modules output/$root_path/${base}_terms.lean > lib/$root_path/terms.lean
+    remove_empty_modules output/$root_path/${base}_opam.lean > lib/$root_path/theorems.lean
+    cd lib
+    lake update
+    lake build
+    cd ..
+}
+
+compare_opam_file() {
+    line
+    echo compare $1 ...
+    diff ../$1 opam/$1
+}
+
+compare_opam_files() {
+    for f in terms.lean theorems.lean
+    do
+        compare_opam_file $f
+    done
+}
+
 check_proofs() {
     start check proofs
     cd output
@@ -211,8 +251,9 @@ stage 7 install_lean $lean_version
 stage 8 dump_proofs
 stage 9 config_output_dir
 stage 10 translate_proofs
+stage 11 create_and_check_library
 ulimit -s unlimited
-stage 11 check_proofs
+stage 12 check_proofs
 
 for f in `ls -1 $timefile-* | sort -V`
 do
