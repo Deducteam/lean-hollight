@@ -626,6 +626,7 @@ axiom thm_MEM_MAP : ∀ {A B : Type _} [Nonempty A] [Nonempty B], ∀ f : A -> B
 axiom thm_FILTER_APPEND : ∀ {A : Type _} [Nonempty A], ∀ P : A -> Prop, ∀ l1 : List A, ∀ l2 : List A, (@FILTER A _ P (@APPEND A _ l1 l2)) = (@APPEND A _ (@FILTER A _ P l1) (@FILTER A _ P l2))
 axiom thm_FILTER_MAP : ∀ {A B : Type _} [Nonempty A] [Nonempty B], ∀ P : B -> Prop, ∀ f : A -> B, ∀ l : List A, (@FILTER B _ P (@MAP A B _ _ f l)) = (@MAP A B _ _ f (@FILTER A _ (@o A B Prop _ _ _ P f) l))
 axiom thm_MEM_FILTER : ∀ {A : Type _} [Nonempty A], ∀ P : A -> Prop, ∀ l : List A, ∀ x : A, (@MEM A _ x (@FILTER A _ P l)) = ((P x) ∧ (@MEM A _ x l))
+axiom thm_LENGTH_FILTER : ∀ {A : Type _} [Nonempty A], ∀ P : A -> Prop, ∀ l : List A, Nat.le (@LENGTH A _ (@FILTER A _ P l)) (@LENGTH A _ l)
 axiom thm_EX_MEM : ∀ {A : Type _} [Nonempty A], ∀ P : A -> Prop, ∀ l : List A, (∃ x : A, (P x) ∧ (@MEM A _ x l)) = (@EX A _ P l)
 axiom thm_MAP_FST_ZIP : ∀ {A B : Type _} [Nonempty A] [Nonempty B], ∀ l1 : List A, ∀ l2 : List B, ((@LENGTH A _ l1) = (@LENGTH B _ l2)) -> (@MAP (prod A B) A _ _ (@prod_fst A B _ _) (@ZIP A B _ _ l1 l2)) = l1
 axiom thm_MAP_SND_ZIP : ∀ {A B : Type _} [Nonempty A] [Nonempty B], ∀ l1 : List A, ∀ l2 : List B, ((@LENGTH A _ l1) = (@LENGTH B _ l2)) -> (@MAP (prod A B) B _ _ (@prod_snd A B _ _) (@ZIP A B _ _ l1 l2)) = l2
@@ -678,6 +679,10 @@ axiom thm_PAIRWISE_TRANSITIVE : ∀ {A : Type _} [Nonempty A], ∀ R' : A -> A -
 axiom thm_LENGTH_LIST_OF_SEQ : ∀ {A : Type _} [Nonempty A], ∀ s : Nat -> A, ∀ n : Nat, (@LENGTH A _ (@list_of_seq A _ s n)) = n
 axiom thm_EL_LIST_OF_SEQ : ∀ {A : Type _} [Nonempty A], ∀ s : Nat -> A, ∀ m : Nat, ∀ n : Nat, (Nat.lt m n) -> (@EL A _ m (@list_of_seq A _ s n)) = (s m)
 axiom thm_LIST_OF_SEQ_EQ_NIL : ∀ {A : Type _} [Nonempty A], ∀ s : Nat -> A, ∀ n : Nat, ((@list_of_seq A _ s n) = (@NIL A _)) = (n = (NUMERAL Nat.zero))
+axiom thm_LIST_OF_SEQ_EQ_SELF : ∀ {A : Type _} [Nonempty A], ∀ l : List A, (@list_of_seq A _ (fun i : Nat => @EL A _ i l) (@LENGTH A _ l)) = l
+axiom thm_LENGTH_EQ_LIST_OF_SEQ : ∀ {A : Type _} [Nonempty A], ∀ l : List A, ∀ n : Nat, ((@LENGTH A _ l) = n) = (l = (@list_of_seq A _ (fun i : Nat => @EL A _ i l) n))
+axiom thm_MAP_LIST_OF_SEQ : ∀ {A B : Type _} [Nonempty A] [Nonempty B], ∀ f : Nat -> A, ∀ g : A -> B, ∀ n : Nat, (@MAP A B _ _ g (@list_of_seq A _ f n)) = (@list_of_seq B _ (@o Nat A B _ _ _ g f) n)
+axiom thm_LIST_OF_SEQ : ∀ {A : Type _} [Nonempty A], (∀ f : Nat -> A, (@list_of_seq A _ f (NUMERAL Nat.zero)) = (@NIL A _)) ∧ (∀ f : Nat -> A, ∀ n : Nat, (@list_of_seq A _ f (Nat.succ n)) = (@CONS A _ (f (NUMERAL Nat.zero)) (@list_of_seq A _ (@o Nat Nat A _ _ _ f Nat.succ) n)))
 axiom thm_MONO_ALL : ∀ {A : Type _} [Nonempty A] (P : A -> Prop) (Q : A -> Prop) (l : List A), (∀ x : A, (P x) -> Q x) -> (@ALL A _ P l) -> @ALL A _ Q l
 axiom thm_MONO_ALL2 : ∀ {A B : Type _} [Nonempty A] [Nonempty B] (P : A -> B -> Prop) (Q : A -> B -> Prop) (l : List A) (l' : List B), (∀ x : A, ∀ y : B, (P x y) -> Q x y) -> (@ALL2 A B _ _ P l l') -> @ALL2 A B _ _ Q l l'
 axiom thm_char_INDUCT : ∀ P : CHAR -> Prop, (∀ a0 : Prop, ∀ a1 : Prop, ∀ a2 : Prop, ∀ a3 : Prop, ∀ a4 : Prop, ∀ a5 : Prop, ∀ a6 : Prop, ∀ a7 : Prop, P (ASCII a0 a1 a2 a3 a4 a5 a6 a7)) -> ∀ x : CHAR, P x
