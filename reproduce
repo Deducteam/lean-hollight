@@ -195,11 +195,10 @@ remove_empty_modules() {
 create_and_check_lib() {
     start create library
     make -C output opam
-    dest=
     mkdir -p lib/$root_path
     cp output/lakefile.toml output/lean-toolchain lib
     echo "import $root_path.theorems" > lib/$root_path.lean
-    cp output/mapping.lean lib/$root_path
+    cp output/$root_path/mapping.lean lib/$root_path
     remove_empty_modules output/$root_path/${base}_terms.lean > lib/$root_path/terms.lean
     remove_empty_modules output/$root_path/${base}_opam.lean > lib/$root_path/theorems.lean
     cd lib
