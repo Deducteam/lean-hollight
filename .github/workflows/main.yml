@@ -8,12 +8,14 @@ on:
       - '**/*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
+      - 'lake-manifest.json'
   push:
     paths:
       - '.github/workflows/**'
       - '**/*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
+      - 'lake-manifest.json'
   workflow_dispatch:
 
 jobs:
@@ -22,9 +24,3 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: Update dependencies
-        run: lake update
-      - name: Get dependency cache
-        run: lake exe cache get
-      - name: Build
-        run: lake build
