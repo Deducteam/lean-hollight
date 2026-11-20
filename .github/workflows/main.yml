@@ -4,11 +4,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
+      - 'main.yml'
       - '*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
   push:
     paths:
+      - 'main.yml'
       - '*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
@@ -20,3 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
+      - name: Update dependencies
+        run: lake update
+      - name: Get dependency cache
+        run: lake exe cache get
+      - name: Build
+        run: lake build
