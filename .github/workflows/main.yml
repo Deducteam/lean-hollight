@@ -4,14 +4,18 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - '*.lean'
+      - '.github/workflows/**'
+      - '**/*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
+      - 'lake-manifest.json'
   push:
     paths:
-      - '*.lean'
+      - '.github/workflows/**'
+      - '**/*.lean'
       - 'lakefile.toml'
       - 'lean-toolchain'
+      - 'lake-manifest.json'
   workflow_dispatch:
 
 jobs:

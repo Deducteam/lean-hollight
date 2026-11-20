@@ -224,10 +224,10 @@ compare_lib_file() {
 
 compare_lib_files() {
     start compare files
-    compare_lib_file .. lib lean-toolchain
-    compare_lib_file .. lib lakefile.toml
-    compare_lib_file .. lib $root_path/terms.lean
-    compare_lib_file .. lib $root_path/theorems.lean
+    for f in lean-toolchain lakefile.toml lake-manifest.json $root_path/terms.lean $root_path/theorems.lean
+    do
+        compare_lib_file .. lib $f
+    done
 }
 
 check_proofs() {
