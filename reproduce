@@ -153,7 +153,7 @@ config_output_dir() {
     mkdir -p output
     cd output
     if test -f Makefile; then make clean-all; fi
-    hol2dk config $hollight_file $root_path ../../mapping.lean --mapping ../../$mapping --renaming ../../$renaming
+    hol2dk config $hollight_file $root_path ../../$root_path/mapping.lean --mapping ../../$mapping --renaming ../../$renaming
     echo leanprover/lean4:v$lean_version > $root_path/lean-toolchain
     cat >> lakefile.toml <<__END__
 [leanOptions]
