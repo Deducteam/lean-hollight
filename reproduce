@@ -80,7 +80,16 @@ checkout_commit() {
     cd ..
 }
 
-#usage: install package_name version
+install_opam() {
+    start install opam
+    cmd=`command -v opam || echo notfound`
+    case $cmd in
+        notfound) bash -c "sh <(curl -fsSL https://opam.ocaml.org/install.sh)";;
+        *) echo opam already installed;;
+    esac
+}
+
+#usage: install package_name version via opam
 install() {
     start install $1
     opam pin -y $1 $2
@@ -240,23 +249,24 @@ stage() {
     fi
 }
 
-stage 1 create_opam_switch
+stage 1 install_opam
+stage 2 create_opam_switch
 eval `opam env`
-stage 2 install_lambdapi $lambdapi_commit
-stage 3 install_hol2dk $hol2dk_commit
+stage 3 install_lambdapi $lambdapi_commit
+stage 4 install_hol2dk $hol2dk_commit
 export HOL2DK_DIR=$OPAM_SWITCH_PREFIX/share/hol2dk
-stage 4 install_hollight_deps
-stage 5 install_hollight
+stage 5 install_hollight_deps
+stage 6 install_hollight
 export HOLLIGHT_DIR=`pwd`/hol-light
-stage 6 patch_hollight
-stage 7 install_lean $lean_version
-stage 8 dump_proofs
-stage 9 config_output_dir
-stage 10 translate_proofs
-stage 11 create_and_check_lib
-stage 12 compare_lib_files
+stage 7 patch_hollight
+stage 8 install_lean $lean_version
+stage 9 dump_proofs
+stage 10 config_output_dir
+stage 11 translate_proofs
+stage 12 create_and_check_lib
+stage 13 compare_lib_files
 ulimit -s unlimited
-stage 13 check_proofs
+stage 14 check_proofs
 
 for f in `ls -1 $timefile-* | sort -V`
 do

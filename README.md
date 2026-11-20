@@ -5,7 +5,7 @@ This [Lean](https://lean-lang.org/) library contains an automatic translation of
 
 **Reproducibility**
 
-The translated theorems are provided as axioms in order to have a fast import because the proofs currently extracted from HOL-Light are very big and not very informative for they are low level (the translation is done at the kernel level, not at the source level). If you are skeptical, you can however generate and check them again by using the script [reproduce](https://github.com/Deducteam/lean-hollight/blob/main/reproduce). If everything works well, the proofs will be in the directory `tmp/output`. Their verification by Lean takes about 25 minutes on an Intel Core i9-13950HX with 32 processors and 128 Gb RAM.
+The translated theorems are provided as axioms in order to have a fast import because the proofs currently extracted from HOL-Light are very big and not very informative for they are low level (the translation is done at the kernel level, not at the source level). If you are skeptical, you can however generate and check them again by using the script [reproduce](https://github.com/Deducteam/lean-hollight/blob/main/reproduce). If everything works well, the proofs will be in the directory `tmp/output`. Their verification by Lean takes about 30 minutes on an Intel Core i9-13950HX with 32 processors and 128 Gb RAM.
 
 **How to contribute?**
 
